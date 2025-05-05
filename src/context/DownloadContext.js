@@ -24,7 +24,11 @@ export function DownloadProvider({ children }) {
   };
 
   const addDownload = (song) => {
-    setDownloads((prev) => [...prev, song]);
+    const id = song.id || `${song.title}-${song.artist}`;
+    setDownloads((prev) => {
+      if (prev.some(item => item.id === id)) return prev;
+      return [...prev, { ...song, id }];
+    });
   };
 
   const removeDownload = (id) => {

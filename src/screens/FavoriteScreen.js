@@ -43,7 +43,7 @@ export default function FavoriteScreen({ navigation }) {
               <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
               <Text style={styles.artist} numberOfLines={1}>{item.artist}</Text>
             </View>
-            <TouchableOpacity onPress={() => removeFavorite(item)}>
+            <TouchableOpacity onPress={() => removeFavorite(item.id)}>
               <Ionicons name="heart" size={22} color="#FF5A7E" />
             </TouchableOpacity>
           </TouchableOpacity>

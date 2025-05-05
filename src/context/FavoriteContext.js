@@ -24,7 +24,11 @@ export function FavoriteProvider({ children }) {
   };
 
   const addFavorite = (song) => {
-    setFavorites((prev) => [...prev, song]);
+    const id = song.id || `${song.title}-${song.artist}`;
+    setFavorites((prev) => {
+      if (prev.some(item => item.id === id)) return prev;
+      return [...prev, { ...song, id }];
+    });
   };
 
   const removeFavorite = (id) => {

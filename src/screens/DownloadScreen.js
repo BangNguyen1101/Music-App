@@ -43,7 +43,7 @@ export default function DownloadScreen({ navigation }) {
               <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
               <Text style={styles.artist} numberOfLines={1}>{item.artist}</Text>
             </View>
-            <TouchableOpacity onPress={() => removeDownload(item)}>
+            <TouchableOpacity onPress={() => removeDownload(item.id)}>
               <MaterialCommunityIcons name="check-circle" size={24} color="#4CAF50" />
             </TouchableOpacity>
           </TouchableOpacity>
