@@ -182,17 +182,17 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 20,
+    padding: 10,
     marginTop: 40,
     backgroundColor: '#fff',
-    borderRadius: 20,
+    borderRadius: 30,
     margin: 16,
     elevation: 5,
     marginBottom: 20,
   },
   profileImage: {
-    width: 80,
-    height: 80,
+    width: 65,
+    height: 65,
     borderRadius: 40,
     borderWidth: 3,
     borderColor: '#A259FF',
@@ -211,14 +211,14 @@ const styles = StyleSheet.create({
   },
   editAvatarText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 10,
     marginTop: 4,
   },
   userInfo: {
     flex: 1,
   },
   userName: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#6B3E26',
     marginBottom: 4,
