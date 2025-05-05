@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { LineChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
+import { useAudio } from '../context/AudioContext';
 
 const chartData = {
   labels: ['09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'],
@@ -29,18 +29,21 @@ const chartData = {
 const songs = [
   {
     id: '1',
-    title: 'Khát Vọng Tuổi Trẻ (Japandee Remix)',
-    artist: 'Tùng Dương, KIND Music',
-    cover: 'https://i.ytimg.com/vi/8gvtAeGTNZQ/maxresdefault.jpg',
+    title: 'Em Của Ngày Hôm Qua',
+    artist: 'Sơn Tùng M-TP',
+    cover: 'https://upload.wikimedia.org/wikipedia/vi/5/5d/Em_c%E1%BB%A7a_ng%C3%A0y_h%C3%B4m_qua.png',
+    url: require('../assets/music/EmCuaNgayHomQua.mp3'),
+    rank: 1,
     change: 0,
-    suggest: true,
+    suggest: false,
   },
   {
     id: '2',
     title: 'Ở trọ',
     artist: 'Thể Thiên, tlinh',
     cover: 'https://i.ytimg.com/vi/p4IyHCNFDV0/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDXJfcf3peXZlvHH_dkIENDny7ZkA',
-    rank: 1,
+    url: require('../assets/music/OTro.mp3'),
+    rank: 2,
     change: 25,
     suggest: false,
   },
@@ -49,7 +52,8 @@ const songs = [
     title: 'Cay',
     artist: 'Khắc Hưng, Jimmii Nguyễn',
     cover: 'https://i.ytimg.com/vi/5eYevf1PmcU/maxresdefault.jpg',
-    rank: 2,
+    url: require('../assets/music/Cay.mp3'),
+    rank: 3,
     change: -1,
     suggest: false,
   },
@@ -58,7 +62,8 @@ const songs = [
     title: 'Bắc Bling (Bắc Ninh)',
     artist: 'Hòa Minzy, Xuân Hinh, Tuấn Cry, Masew',
     cover: 'https://i1.sndcdn.com/artworks-MB8Olhqn4KyKz34Q-AShOtQ-t500x500.jpg',
-    rank: 3,
+    url: require('../assets/music/EmCuaNgayHomQua.mp3'),
+    rank: 4,
     change: -1,
     suggest: false,
   },
@@ -67,7 +72,8 @@ const songs = [
     title: 'Phim Ba Người',
     artist: 'Nguyễn Vĩ',
     cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbSNq5p6JqFeCoh4qBN-dbuzBEkpqU5UzKUg&s',
-    rank: 4,
+    url: require('../assets/music/EmCuaNgayHomQua.mp3'),
+    rank: 5,
     change: 0,
     suggest: false,
   },
@@ -76,7 +82,8 @@ const songs = [
     title: 'Em Gái Mưa',
     artist: 'Hương Tràm',
     cover: 'https://upload.wikimedia.org/wikipedia/vi/7/77/B%C3%ACa_%C4%91%C4%A9a_%C4%91%C6%A1n_Em_g%C3%A1i_m%C6%B0a_-_H%C6%B0%C6%A1ng_Tr%C3%A0m.png',
-    rank: 5,
+    url: require('../assets/music/EmCuaNgayHomQua.mp3'),
+    rank: 6,
     change: 0,
     suggest: false,
   },
@@ -85,7 +92,8 @@ const songs = [
     title: 'Hồng Nhan',
     artist: 'Jack',
     cover: 'https://photo-resize-zmp3.zadn.vn/w600_r1x1_jpeg/cover/3/2/7/f/327f68099674128289ba8a2e98232d68.jpg',
-    rank: 6,
+    url: require('../assets/music/EmCuaNgayHomQua.mp3'),
+    rank: 7,
     change: 0,
     suggest: false,
   },
@@ -94,7 +102,8 @@ const songs = [
     title: 'Bạc Phận',
     artist: 'Jack, K-ICM',
     cover: 'https://i.ytimg.com/vi/886d9rm_AFE/maxresdefault.jpg',
-    rank: 7,
+    url: require('../assets/music/EmCuaNgayHomQua.mp3'),
+    rank: 8,
     change: 0,
     suggest: false,
   },
@@ -103,7 +112,8 @@ const songs = [
     title: 'Sóng Gió',
     artist: 'Jack, K-ICM',
     cover: 'https://i.ytimg.com/vi/j8U06veqxdU/maxresdefault.jpg',
-    rank: 8,
+    url: require('../assets/music/EmCuaNgayHomQua.mp3'),
+    rank: 9,
     change: 0,
     suggest: false,
   },
@@ -112,7 +122,8 @@ const songs = [
     title: 'Một Bước Yêu Vạn Dặm Đau',
     artist: 'Mr. Siro',
     cover: 'https://i.ytimg.com/vi/7wr4I5p1XMw/maxresdefault.jpg',
-    rank: 9,
+    url: require('../assets/music/EmCuaNgayHomQua.mp3'),
+    rank: 10,
     change: 0,
     suggest: false,
   },
@@ -120,7 +131,13 @@ const songs = [
 
 const screenWidth = Dimensions.get('window').width;
 
-export default function ZingChartScreen() {
+export default function ZingChartScreen({ navigation }) {
+  const { play, currentSong, isPlaying } = useAudio();
+
+  const handlePlaySong = (song) => {
+    play(song);
+  };
+
   return (
     <LinearGradient colors={['#3a185a', '#2b0a3d']} style={styles.container}>
       {/* Header */}
@@ -161,32 +178,55 @@ export default function ZingChartScreen() {
         />
       </View>
       {/* Song List */}
-      <FlatList
-        data={songs}
-        keyExtractor={item => item.id}
-        renderItem={({ item, index }) => (
-          <View style={styles.songRow}>
-            <Image source={{ uri: item.cover }} style={styles.songCover} />
-            <View style={{ flex: 1 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {item.suggest && <Text style={styles.suggest}>Gợi ý</Text>}
-                <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
+      <ScrollView style={styles.songList}>
+        {songs.map((song, index) => (
+          <TouchableOpacity
+            key={song.id}
+            style={[
+              styles.songItem,
+              currentSong?.id === song.id && styles.activeSongItem
+            ]}
+            onPress={() => handlePlaySong(song)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.rankContainer}>
+              <Text style={[
+                styles.rank,
+                currentSong?.id === song.id && styles.activeRank
+              ]}>{index + 1}</Text>
+              <View style={styles.rankChange}>
+                {song.change > 0 && <Ionicons name="arrow-up" size={16} color="#4CAF50" />}
+                {song.change < 0 && <Ionicons name="arrow-down" size={16} color="#FF5A7E" />}
+                {song.change === 0 && <Ionicons name="remove" size={16} color="#A259FF" />}
               </View>
-              <Text style={styles.songArtist} numberOfLines={1}>{item.artist}</Text>
             </View>
-            <View style={{ alignItems: 'center', marginHorizontal: 8 }}>
-              <Text style={styles.rank}>{item.rank}</Text>
-              {item.change > 0 && <MaterialIcons name="arrow-drop-up" size={20} color="#00e676" />}
-              {item.change < 0 && <MaterialIcons name="arrow-drop-down" size={20} color="#ff1744" />}
-              {item.change !== 0 && <Text style={{ color: item.change > 0 ? '#00e676' : '#ff1744', fontSize: 12 }}>{Math.abs(item.change)}</Text>}
+            <Image 
+              source={{ uri: song.cover }} 
+              style={[
+                styles.songCover,
+                currentSong?.id === song.id && styles.activeSongCover
+              ]} 
+            />
+            <View style={styles.songInfo}>
+              <Text style={[
+                styles.songTitle,
+                currentSong?.id === song.id && styles.activeSongTitle
+              ]} numberOfLines={1}>{song.title}</Text>
+              <Text style={[
+                styles.songArtist,
+                currentSong?.id === song.id && styles.activeSongArtist
+              ]} numberOfLines={1}>{song.artist}</Text>
             </View>
-            <TouchableOpacity>
-              <Ionicons name="ellipsis-vertical" size={22} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        )}
-        style={{ marginTop: 8 }}
-      />
+            <View style={styles.songActions}>
+              {currentSong?.id === song.id && isPlaying ? (
+                <Ionicons name="pause-circle" size={28} color="#A259FF" />
+              ) : (
+                <Ionicons name="play-circle" size={28} color="#A259FF" />
+              )}
+            </View>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </LinearGradient>
   );
 }
@@ -226,13 +266,35 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 8,
   },
-  songRow: {
+  songList: {
+    flex: 1,
+  },
+  songItem: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.15)',
     borderRadius: 12,
     padding: 8,
     marginBottom: 8,
+    transform: [{ scale: 1 }],
+  },
+  activeSongItem: {
+    backgroundColor: 'rgba(162, 89, 255, 0.15)',
+    transform: [{ scale: 1.02 }],
+  },
+  rankContainer: {
+    width: 40,
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  rank: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: -4,
+  },
+  activeRank: {
+    color: '#A259FF',
   },
   songCover: {
     width: 48,
@@ -240,27 +302,34 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginRight: 10,
   },
+  activeSongCover: {
+    borderWidth: 2,
+    borderColor: '#A259FF',
+  },
+  songInfo: {
+    flex: 1,
+  },
   songTitle: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 15,
     marginLeft: 4,
   },
+  activeSongTitle: {
+    color: '#A259FF',
+  },
   songArtist: {
     color: '#b39ddb',
     fontSize: 13,
     marginLeft: 4,
   },
-  suggest: {
-    color: '#ff5a7e',
-    fontWeight: 'bold',
-    fontSize: 13,
-    marginRight: 6,
+  activeSongArtist: {
+    color: '#A259FF',
   },
-  rank: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: -4,
+  rankChange: {
+    marginTop: 4,
+  },
+  songActions: {
+    padding: 8,
   },
 }); 

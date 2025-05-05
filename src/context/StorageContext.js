@@ -75,6 +75,26 @@ export function StorageProvider({ children }) {
     }
   };
 
+  // Cập nhật thông tin user
+  const updateUser = async (updatedUser) => {
+    try {
+      // Cập nhật trong danh sách users
+      const updatedUsers = users.map(user => 
+        user.email === updatedUser.email ? updatedUser : user
+      );
+      await AsyncStorage.setItem('users', JSON.stringify(updatedUsers));
+      setUsers(updatedUsers);
+
+      // Cập nhật currentUser nếu đang là user đang đăng nhập
+      if (currentUser && currentUser.email === updatedUser.email) {
+        await AsyncStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        setCurrentUser(updatedUser);
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
+  };
+
   return (
     <StorageContext.Provider value={{
       playlists,
@@ -84,6 +104,7 @@ export function StorageProvider({ children }) {
       addUser,
       setLoginUser,
       logout,
+      updateUser,
     }}>
       {children}
     </StorageContext.Provider>

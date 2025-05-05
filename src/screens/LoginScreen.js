@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useStorage } from '../context/StorageContext';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -10,6 +11,7 @@ export default function LoginScreen({ navigation }) {
   const [error, setError] = useState('');
   const [notRobot, setNotRobot] = useState(false);
   const [success, setSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { users, addUser, setLoginUser } = useStorage();
 
   const handleLogin = () => {
@@ -74,8 +76,18 @@ export default function LoginScreen({ navigation }) {
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
+          secureTextEntry={!showPassword}
         />
+        <TouchableOpacity 
+          style={styles.eyeIcon}
+          onPress={() => setShowPassword(!showPassword)}
+        >
+          <Ionicons 
+            name={showPassword ? "eye-off" : "eye"} 
+            size={24} 
+            color="#6B3E26" 
+          />
+        </TouchableOpacity>
       </View>
       {isSignUp && (
         <TouchableOpacity
@@ -146,11 +158,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 4,
     elevation: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     fontSize: 16,
     color: '#B23A48',
     paddingVertical: 10,
+    flex: 1,
+  },
+  eyeIcon: {
+    padding: 8,
   },
   loginBtn: {
     backgroundColor: '#B23A48',
